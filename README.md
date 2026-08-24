@@ -52,23 +52,30 @@ Phase 2 transcribes extracted audio files using `faster-whisper` on CPU INT8:
 
 Phase 3 analyzes transcripts to identify standalone 15s–90s short-form reel moments:
 
-1. **Semantic Chunker (`backend/engines/chunker.py`)**: Groups segments into 2–5 minute chunks based on pause gaps and sentence boundaries.
-2. **Candidate Detector (`backend/engines/candidate_detector.py`)**:
-   - Integrates local LLM (Ollama `http://localhost:11434`) when active.
-   - Includes a deterministic heuristic/NLP fallback engine for offline execution.
-3. **Clip Potential Scoring Engine (`backend/engines/scoring_engine.py`)**:
-   - Computes weighted score out of 100 based on formula:
-     $\text{Score} = (\text{Hook} \times 0.25 + \text{Context} \times 0.25 + \text{Completeness} \times 0.20 + \text{Emotion} \times 0.15 + \text{Curiosity} \times 0.10 + \text{Shareability} \times 0.05) \times 10$
+1. **Semantic Chunker**: Groups segments into 2–5 minute chunks based on pause gaps and sentence boundaries.
+2. **Candidate Detector**: Integrates local LLM (Ollama) with heuristic/NLP fallback engine for offline candidate discovery.
+3. **Scoring Engine**: Computes weighted score out of 100 based on formula ($\text{Hook} \cdot 0.25 + \text{Context} \cdot 0.25 + \text{Completeness} \cdot 0.20 + \text{Emotion} \cdot 0.15 + \text{Curiosity} \cdot 0.10 + \text{Shareability} \cdot 0.05) \cdot 10$.
+
+---
+
+## 🏆 Phase 4 - Candidate Ranking & Deduplication Engine (Completed)
+
+Phase 4 filters and ranks candidate clips into the Top 10 reel moments:
+
+1. **Overlap Removal (`backend/engines/deduplicator.py`)**: Identifies timestamp overlaps and keeps only the highest-scoring candidate.
+2. **Timeline Diversity Spacing**: Ensures clips are spaced at least 60 seconds apart across the video timeline.
+3. **Score Thresholding**: Filters clips with $\text{Clip Potential Score} \ge 65.0$.
 4. **Data Storage & API/CLI**:
-   - Saves candidates to `data/projects/<project_id>/analysis/candidates.json`.
-   - `cli_analyze.py` for command-line intelligence testing.
-   - Endpoints: `POST /api/projects/{id}/analyze` and `GET /api/projects/{id}/candidates`.
+   - Saves ranked clips to `data/projects/<project_id>/analysis/ranked_clips.json`.
+   - Sets project status to `READY_FOR_REVIEW`.
+   - `cli_rank.py` for command-line ranking tests.
+   - Endpoints: `POST /api/projects/{id}/rank` and `GET /api/projects/{id}/ranked`.
 
 ---
 
 ## 🧪 Testing
 
-Run the automated test suite covering Phases 1, 2, & 3:
+Run the automated test suite covering Phases 1, 2, 3, & 4:
 
 ```bash
 # Activate virtual environment
