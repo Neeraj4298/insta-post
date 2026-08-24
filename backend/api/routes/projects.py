@@ -171,3 +171,38 @@ def get_ranked_clips(project_id: str):
     with open(ranked_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
+
+@router.post("/{project_id}/render")
+def render_project_video_clips(
+    project_id: str,
+    background_tasks: BackgroundTasks,
+    clip_ids: Optional[List[str]] = None,
+    aspect_ratio: str = "9:16"
+):
+    """Trigger Phase 6: Render vertical 9:16 reels with burned subtitles."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    if not meta.get("ranked_clips_path") or not os.path.exists(meta.get("ranked_clips_path")):
+        raise HTTPException(status_code=400, detail="Ranked clips not found. Run Phase 4 ranking first.")
+
+    from backend.services.render_service import render_project_clips
+    background_tasks.add_task(render_project_clips, project_id, clip_ids, aspect_ratio)
+    return {"message": "FFmpeg video rendering task started", "project_id": project_id, "status": "RENDERING"}
+
+@router.get("/{project_id}/output/{filename}")
+def serve_rendered_clip_file(project_id: str, filename: str):
+    """Serve rendered MP4 or SRT output files directly."""
+    from backend.utils.files import get_project_dir
+    from fastapi.responses import FileResponse
+
+    pdir = get_project_dir(project_id)
+    file_path = pdir / "output" / filename
+
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Output file not found")
+
+    media_type = "video/mp4" if filename.endswith(".mp4") else "text/plain"
+    return FileResponse(path=str(file_path), media_type=media_type, filename=filename)
