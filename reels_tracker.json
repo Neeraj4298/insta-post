@@ -1,0 +1,47 @@
+[
+  {
+    "reel_id": "reel_001",
+    "filename": "reel_1.mp4",
+    "drive_link": "https://drive.google.com/file/d/1saR2zoFd47npssYG0PnUeY8HMD5Zky5o_1/view",
+    "status": "UPLOADED",
+    "uploaded_at": "2026-08-24T12:30:00+05:30",
+    "caption": "Soft Ghibli mood edit #ghibli #anime",
+    "aspect_ratio": "9:16"
+  },
+  {
+    "reel_id": "reel_002",
+    "filename": "reel_2.mp4",
+    "drive_link": "https://drive.google.com/file/d/1saR2zoFd47npssYG0PnUeY8HMD5Zky5o_2/view",
+    "status": "UPLOADED",
+    "uploaded_at": "2026-08-24T13:05:00+05:30",
+    "caption": "Soft Ghibli mood edit #ghibli #anime",
+    "aspect_ratio": "9:16"
+  },
+  {
+    "reel_id": "reel_003",
+    "filename": "reel_3.mp4",
+    "drive_link": "https://drive.google.com/file/d/1saR2zoFd47npssYG0PnUeY8HMD5Zky5o_3/view",
+    "status": "UPLOADED",
+    "uploaded_at": "2026-08-24T17:42:00+05:30",
+    "caption": "Walking through quiet streets \ud83c\udf27\ufe0f\u2728 #studioghibli #ghibliaesthetic",
+    "aspect_ratio": "9:16"
+  },
+  {
+    "reel_id": "reel_004",
+    "filename": "reel_4.mp4",
+    "drive_link": "https://drive.google.com/file/d/1saR2zoFd47npssYG0PnUeY8HMD5Zky5o_4/view",
+    "status": "UPLOADED",
+    "uploaded_at": "2026-08-24T23:31:58.976217+05:30",
+    "caption": "Lost in starry skies and peaceful memories \u2728\ud83d\udcab #studioghibli #animeedit #softvibes #ghiblicafe",
+    "aspect_ratio": "9:16"
+  },
+  {
+    "reel_id": "reel_005",
+    "filename": "reel_5.mp4",
+    "drive_link": "https://drive.google.com/file/d/1saR2zoFd47npssYG0PnUeY8HMD5Zky5o_5/view",
+    "status": "PENDING",
+    "uploaded_at": null,
+    "caption": "Cozy autumn rain and warm tea \ud83c\udf75\ud83c\udf42 #ghiblimovies #chillvibes #animereels #explorepage",
+    "aspect_ratio": "9:16"
+  }
+]
