@@ -27,6 +27,7 @@ class ProjectResponse(BaseModel):
     status: ProjectStatus
     video_path: Optional[str] = None
     audio_path: Optional[str] = None
+    transcript_path: Optional[str] = None
     duration_seconds: Optional[float] = None
     error_message: Optional[str] = None
     created_at: str

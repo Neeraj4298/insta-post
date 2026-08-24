@@ -75,3 +75,35 @@ def get_project(project_id: str):
         return ProjectResponse(**meta)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Project not found")
+
+@router.post("/{project_id}/transcribe")
+def transcribe_project(project_id: str, background_tasks: BackgroundTasks, model_name: str = "base"):
+    """Trigger Phase 2: Transcribe project audio using faster-whisper."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    if not meta.get("audio_path") or not os.path.exists(meta.get("audio_path")):
+        raise HTTPException(status_code=400, detail="Audio file not extracted yet. Run Phase 1 first.")
+
+    from backend.services.transcription_service import transcribe_project_audio
+    background_tasks.add_task(transcribe_project_audio, project_id, model_name)
+    return {"message": "Transcription task started", "project_id": project_id, "status": "TRANSCRIBING"}
+
+@router.get("/{project_id}/transcript")
+def get_project_transcript(project_id: str):
+    """Retrieve saved transcript JSON for a project."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    transcript_path = meta.get("transcript_path")
+    if not transcript_path or not os.path.exists(transcript_path):
+        raise HTTPException(status_code=404, detail="Transcript not found for this project")
+
+    import json
+    with open(transcript_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data
