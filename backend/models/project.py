@@ -12,6 +12,7 @@ class ProjectStatus(str, Enum):
     TRANSCRIBED = "TRANSCRIBED"
     ANALYZING = "ANALYZING"
     ANALYZED = "ANALYZED"
+    RANKING = "RANKING"
     READY_FOR_REVIEW = "READY_FOR_REVIEW"
     RENDERING = "RENDERING"
     COMPLETED = "COMPLETED"
@@ -30,6 +31,7 @@ class ProjectResponse(BaseModel):
     audio_path: Optional[str] = None
     transcript_path: Optional[str] = None
     candidates_path: Optional[str] = None
+    ranked_clips_path: Optional[str] = None
     duration_seconds: Optional[float] = None
     error_message: Optional[str] = None
     created_at: str

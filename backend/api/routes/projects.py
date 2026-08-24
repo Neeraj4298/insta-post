@@ -139,3 +139,35 @@ def get_project_candidates(project_id: str):
     with open(candidates_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
+
+@router.post("/{project_id}/rank")
+def rank_project_clips(project_id: str, background_tasks: BackgroundTasks, min_score: float = 65.0, limit: int = 10):
+    """Trigger Phase 4: Deduplicate, space out, and rank top candidate clips."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    if not meta.get("candidates_path") or not os.path.exists(meta.get("candidates_path")):
+        raise HTTPException(status_code=400, detail="Candidates not found. Run Phase 3 analysis first.")
+
+    from backend.services.clip_service import rank_project_candidates
+    background_tasks.add_task(rank_project_candidates, project_id, min_score, limit)
+    return {"message": "Ranking and deduplication task started", "project_id": project_id, "status": "RANKING"}
+
+@router.get("/{project_id}/ranked")
+def get_ranked_clips(project_id: str):
+    """Retrieve top ranked clips ready for review or editing."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    ranked_path = meta.get("ranked_clips_path")
+    if not ranked_path or not os.path.exists(ranked_path):
+        raise HTTPException(status_code=404, detail="Ranked clips not found for this project")
+
+    import json
+    with open(ranked_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data
