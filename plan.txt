@@ -1,0 +1,1606 @@
+Yes. And I’m going to structure this as a **real build specification**, not vague startup advice.
+
+Your constraints are clear: **₹0 budget, i5 laptop, 8 GB RAM, local-first processing, YouTube long-video input, AI identification of the best short-form moments, automatic reel generation, subtitles, 9:16 output, and practical development using Antigravity**.
+
+The key decision: **this should be a modular monolith, not microservices**. On your laptop, Docker/Kubernetes/Redis/Celery would be unnecessary overhead. Build the intelligence first; polish and scalability come later.
+
+I’m also going to make the PRD and BRD directly usable as your development blueprint.
+
+
+# Viral Reel Creator — Complete Practical Development Blueprint
+
+Below is the plan I recommend you actually build.
+
+I am deliberately **not** designing this as a SaaS, microservice architecture, or "Opus Clip clone." With an **i5 + 8 GB RAM + ₹0 budget**, that would be stupid engineering.
+
+The product should first be a **local AI-powered reel extraction tool**.
+
+---
+
+# 1. Product Definition
+
+## Working name
+
+**ClipForge Local**
+
+You can rename it later.
+
+## One-line product vision
+
+> Paste a long-form video link, analyze the content locally using free AI, identify the strongest standalone short-form moments, and generate vertical captioned reels.
+
+## Core target use case
+
+The first version should focus on:
+
+* Sermons
+* Christian podcasts
+* Testimonies
+* Interviews
+* Educational videos
+* Podcasts
+* Long talking-head videos
+
+This is important because your first AI scoring system can be optimized for **spoken content**.
+
+Do **not** initially try to support:
+
+* Music videos
+* Movies
+* Gaming
+* Highly edited cinematic content
+* Multiple constantly changing speakers
+* Automatic meme editing
+
+That expands the problem unnecessarily.
+
+---
+
+# 2. Your Actual Requirements
+
+## Functional requirements
+
+The application must allow the user to:
+
+### Input
+
+* Paste a YouTube video URL.
+* Optionally upload a local video later.
+* Select desired output format:
+
+  * 9:16
+  * 16:9 clip
+* Select desired clip duration:
+
+  * 15–30 seconds
+  * 30–60 seconds
+  * 60–90 seconds
+* Select number of clips:
+
+  * 3
+  * 5
+  * 10
+
+### AI processing
+
+The system must:
+
+1. Obtain/process the video locally where the user has rights or permission.
+2. Extract audio.
+3. Transcribe the spoken content with timestamps.
+4. Break the transcript into manageable semantic chunks.
+5. Analyze chunks using a local LLM.
+6. Detect high-potential reel moments.
+7. Score candidate clips.
+8. Remove overlapping candidates.
+9. Rank the best clips.
+10. Generate metadata for each clip.
+
+### For each selected clip
+
+The system should produce:
+
+```text
+Clip title
+
+Start timestamp
+End timestamp
+
+Duration
+
+AI score
+
+Why this clip was selected
+
+Hook strength
+
+Emotion score
+
+Standalone context score
+
+Curiosity score
+
+Shareability score
+```
+
+### Video generation
+
+The application should:
+
+* Cut the original video.
+* Convert it to 9:16.
+* Generate subtitles.
+* Burn subtitles into the video.
+* Export MP4.
+* Save all generated clips locally.
+
+---
+
+# 3. The Most Important Product Decision
+
+## Do not call it a "viral score"
+
+That's misleading.
+
+You cannot know whether something will go viral before publishing it.
+
+Instead, call it:
+
+> **Clip Potential Score**
+
+For example:
+
+```text
+Clip Potential: 87/100
+
+Hook Strength:        18/20
+Standalone Context:   19/20
+Emotional Impact:     15/20
+Curiosity:            17/20
+Message Completeness: 18/20
+```
+
+This is more honest and more useful.
+
+---
+
+# 4. Business Requirements Document — BRD
+
+## 4.1 Business problem
+
+Creators have long-form videos containing valuable moments, but manually reviewing a 30-minute or 1-hour video to find short-form content is time-consuming.
+
+Existing AI clipping tools may require subscriptions or cloud processing.
+
+The business need is a system that can run locally and help users:
+
+* discover strong clips,
+* reduce manual review time,
+* generate multiple short-form videos,
+* avoid recurring API costs.
+
+## 4.2 Proposed solution
+
+A local desktop/web application that processes long-form videos using:
+
+* local transcription,
+* local AI analysis,
+* deterministic scoring,
+* FFmpeg-based video rendering.
+
+The system will prioritize **quality of clip selection over fancy editing**.
+
+## 4.3 Primary users
+
+### User Type 1 — Content Creator
+
+Needs:
+
+* Turn podcasts into reels.
+* Quickly find interesting moments.
+* Generate multiple clips.
+
+### User Type 2 — Church / Ministry
+
+Needs:
+
+* Convert sermons into short clips.
+* Extract Gospel messages.
+* Create Instagram Reels and YouTube Shorts.
+
+### User Type 3 — Educational Creator
+
+Needs:
+
+* Extract useful insights.
+* Create short educational clips.
+* Repurpose long-form content.
+
+---
+
+## 4.4 Business goals
+
+### Primary goals
+
+* Reduce manual video review.
+* Generate useful clip candidates automatically.
+* Operate without paid APIs.
+* Run on modest hardware.
+* Produce usable video output.
+
+### Non-goals for Version 1
+
+Do not build:
+
+* User authentication
+* Payments
+* Cloud storage
+* Multi-user collaboration
+* Social media publishing
+* Analytics dashboards
+* Mobile app
+* Kubernetes
+* Microservices
+* Redis
+* PostgreSQL
+* Background distributed workers
+
+None of these help validate the core product.
+
+---
+
+# 5. Product Requirements Document — PRD
+
+# 5.1 User Journey
+
+```text
+USER OPENS APP
+        ↓
+PASTES VIDEO URL
+        ↓
+SELECTS SETTINGS
+        ↓
+CLICKS "ANALYZE VIDEO"
+        ↓
+SYSTEM PROCESSES VIDEO
+        ↓
+TRANSCRIPTION
+        ↓
+AI CONTENT ANALYSIS
+        ↓
+CLIP CANDIDATE GENERATION
+        ↓
+CLIP RANKING
+        ↓
+USER SEES TOP CLIPS
+        ↓
+USER SELECTS CLIPS
+        ↓
+GENERATE REELS
+        ↓
+SUBTITLES + 9:16
+        ↓
+EXPORTED MP4 FILES
+```
+
+---
+
+# 5.2 Functional Modules
+
+The project should have **six modules**.
+
+```text
+clipforge-local/
+
+├── video_ingestion/
+├── transcription/
+├── intelligence/
+├── clip_engine/
+├── rendering/
+└── web_ui/
+```
+
+This is still one application.
+
+---
+
+# MODULE 1 — Video Ingestion
+
+## Responsibility
+
+Accept a URL and prepare the video for processing.
+
+### Input
+
+```text
+https://youtube.com/watch?v=xxxxx
+```
+
+### Process
+
+The ingestion module should:
+
+1. Validate the URL.
+2. Create a unique project ID.
+3. Retrieve metadata.
+4. Download/process the source where permitted.
+5. Store the source video.
+6. Extract audio.
+
+`yt-dlp` can handle the retrieval side for supported sources, while FFmpeg handles media manipulation. Use them only for content you own or have permission to process and republish.
+
+Recommended project structure:
+
+```text
+projects/
+
+└── project_001/
+    ├── source/
+    │   └── video.mp4
+    │
+    ├── audio/
+    │   └── audio.wav
+    │
+    ├── transcript/
+    │   └── transcript.json
+    │
+    ├── analysis/
+    │   └── candidates.json
+    │
+    └── output/
+        ├── clip_01.mp4
+        ├── clip_02.mp4
+        └── clip_03.mp4
+```
+
+---
+
+# MODULE 2 — Transcription Engine
+
+Use:
+
+**faster-whisper**
+
+It is a Whisper implementation built on CTranslate2 and supports CPU INT8 inference; its documentation shows lower-memory CPU configurations compared with standard Whisper. That makes it a much better fit for your 8 GB machine than blindly loading large models. ([GitHub][1])
+
+## Recommended starting configuration
+
+For your laptop:
+
+```text
+Model: base
+Device: CPU
+Compute Type: int8
+Beam Size: 3
+```
+
+Do not start with `large-v3`.
+
+That would be unnecessary.
+
+### Output structure
+
+```json
+{
+  "video_id": "project_001",
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 5.2,
+      "text": "Welcome everyone..."
+    }
+  ]
+}
+```
+
+The timestamps are essential because every future component depends on them.
+
+---
+
+# MODULE 3 — Transcript Intelligence Engine
+
+This is the brain.
+
+## Step 1: Semantic chunking
+
+Do not split every 5 minutes blindly.
+
+Instead, build chunks based on:
+
+* sentence boundaries,
+* pauses,
+* topic changes,
+* maximum duration.
+
+Example:
+
+```text
+VIDEO TRANSCRIPT
+
+00:00–03:12
+Introduction
+
+03:12–07:45
+Personal story
+
+07:45–12:10
+Main teaching
+
+12:10–16:20
+Emotional story
+
+16:20–21:00
+Conclusion
+```
+
+Then split large sections further if necessary.
+
+### Target chunk size
+
+```text
+2–5 minutes
+```
+
+That is manageable for a small local model.
+
+---
+
+# MODULE 4 — Candidate Detection
+
+Use a small local model through Ollama.
+
+Ollama can run models locally and expose a local API, so the architecture does not require a paid API for the analysis layer. ([GitHub][2])
+
+However, with **8 GB RAM**, keep expectations realistic.
+
+## Important rule
+
+Do not run:
+
+```text
+Huge LLM
++
+Whisper
++
+Browser
++
+FFmpeg rendering
+```
+
+simultaneously.
+
+Instead:
+
+```text
+STEP 1
+Download/process
+
+↓
+
+STEP 2
+Transcribe
+
+↓
+
+Unload transcription process
+
+↓
+
+STEP 3
+Run LLM analysis
+
+↓
+
+Unload LLM
+
+↓
+
+STEP 4
+Render videos
+```
+
+Sequential processing is your friend.
+
+---
+
+# Candidate Detection Prompt Logic
+
+The LLM receives:
+
+```text
+TRANSCRIPT CHUNK
+
+START: 12:00
+END: 16:00
+
+[TRANSCRIPT]
+...
+```
+
+It must identify potential clips.
+
+Example expected output:
+
+```json
+[
+  {
+    "start": 742.5,
+    "end": 796.2,
+    "title": "You Were Never Meant to Carry This Alone",
+    "reason": "Complete emotional message with a strong resolution",
+    "hook": "You've been carrying something God never asked you to carry.",
+    "emotion": 9,
+    "curiosity": 8,
+    "standalone_context": 9,
+    "message_completeness": 10
+  }
+]
+```
+
+---
+
+# 6. Clip Potential Scoring Engine
+
+Do not allow the LLM to simply invent a random final score.
+
+Use the LLM to evaluate dimensions.
+
+Then calculate the final score yourself.
+
+## Formula
+
+```text
+FINAL SCORE =
+(
+Hook × 0.25
++
+Standalone Context × 0.25
++
+Message Completeness × 0.20
++
+Emotional Impact × 0.15
++
+Curiosity × 0.10
++
+Shareability × 0.05
+)
+× 10
+```
+
+Maximum:
+
+```text
+100
+```
+
+## Example
+
+```text
+Hook:                 9
+Standalone Context:   10
+Completeness:         9
+Emotion:              8
+Curiosity:            9
+Shareability:         8
+```
+
+Result:
+
+```text
+Clip Potential: 91/100
+```
+
+---
+
+# 7. Candidate Filtering
+
+After analyzing all chunks, you may have:
+
+```text
+50–100 candidates
+```
+
+You cannot render all of them.
+
+Filter them.
+
+## Rules
+
+### Rule 1 — Minimum duration
+
+```text
+15 seconds
+```
+
+### Rule 2 — Maximum duration
+
+```text
+90 seconds
+```
+
+### Rule 3 — Remove overlap
+
+Example:
+
+```text
+Candidate A
+12:00–12:50
+
+Candidate B
+12:30–13:20
+```
+
+These overlap.
+
+Keep the higher-scoring candidate.
+
+### Rule 4 — Minimum score
+
+Example:
+
+```text
+Only retain candidates >= 65
+```
+
+### Rule 5 — Diversity
+
+Do not return:
+
+```text
+Clip 1: 12:00
+Clip 2: 12:30
+Clip 3: 13:00
+Clip 4: 13:30
+```
+
+That is useless.
+
+Add a spacing rule:
+
+```text
+At least 60–120 seconds apart
+```
+
+unless explicitly requested otherwise.
+
+---
+
+# 8. Clip Review UI
+
+Before rendering, show:
+
+```text
+┌──────────────────────────────────────────┐
+│ CLIP #1                                 │
+│                                          │
+│ 87 / 100                                │
+│                                          │
+│ You Were Never Meant To Carry This Alone│
+│                                          │
+│ 12:42 → 13:31                           │
+│ Duration: 49 seconds                     │
+│                                          │
+│ Hook:                                    │
+│ "You've been carrying something..."     │
+│                                          │
+│ [Preview] [Generate Reel]               │
+└──────────────────────────────────────────┘
+```
+
+The user must be able to:
+
+* select a clip,
+* deselect a clip,
+* modify start time,
+* modify end time,
+* edit title,
+* edit hook.
+
+This is important.
+
+**AI should suggest. The human should approve.**
+
+---
+
+# 9. Rendering Engine
+
+Use FFmpeg.
+
+FFmpeg's filter system supports transformations such as crop, scale, overlay, and subtitle-related processing, making it sufficient for the initial renderer. ([FFmpeg][3])
+
+## Version 1 crop strategy
+
+Do not build AI face tracking yet.
+
+Use:
+
+```text
+CENTER CROP
+```
+
+For talking-head content:
+
+```text
+Input: 1920×1080
+
+Output: 1080×1920
+```
+
+If the subject is centered, this will work.
+
+Later:
+
+```text
+V2 → Face detection
+V3 → Active speaker tracking
+```
+
+---
+
+# 10. Subtitle System
+
+## Phase 1
+
+Generate subtitles from transcript timestamps.
+
+Format:
+
+```text
+00:00:01,000 --> 00:00:03,000
+You've been carrying something
+```
+
+Create an `.srt` or `.ass` file.
+
+## Phase 2
+
+Add word-level highlighting.
+
+Example:
+
+```text
+YOU'VE BEEN CARRYING
+something GOD NEVER
+ASKED YOU TO CARRY
+```
+
+## Subtitle style options
+
+### Style A — Minimal
+
+```text
+White text
+Black outline
+Bottom center
+```
+
+### Style B — Reel
+
+```text
+Large uppercase
+2–4 words per line
+Highlighted keyword
+```
+
+### Style C — Sermon
+
+```text
+Clean readable subtitles
+Speaker-focused
+Minimal distraction
+```
+
+Do not build 20 styles initially.
+
+Build **one excellent default style**.
+
+---
+
+# 11. Recommended Technology Stack
+
+## Backend
+
+```text
+Python 3.11
+FastAPI
+```
+
+## Processing
+
+```text
+yt-dlp
+faster-whisper
+Ollama
+FFmpeg
+```
+
+## Storage
+
+```text
+Local filesystem
+SQLite
+```
+
+## Frontend
+
+My recommendation:
+
+```text
+React + Vite
+```
+
+Not Next.js.
+
+You do not need SSR, SEO, or server-side rendering for a local tool.
+
+---
+
+# 12. Final Architecture
+
+```text
+                    ┌─────────────────┐
+                    │    React UI     │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │    FastAPI      │
+                    │   Application   │
+                    └────────┬────────┘
+                             │
+        ┌────────────────────┼────────────────────┐
+        ▼                    ▼                    ▼
+
+┌──────────────┐    ┌────────────────┐   ┌────────────────┐
+│ Video Module │    │ Transcript     │   │ Project Store  │
+│              │    │ Engine         │   │ SQLite + Files │
+│ yt-dlp       │    │ faster-whisper │   │                │
+└──────┬───────┘    └───────┬────────┘   └────────────────┘
+       │                    │
+       └────────────┬───────┘
+                    ▼
+          ┌──────────────────┐
+          │ Intelligence     │
+          │ Engine           │
+          │                  │
+          │ Ollama + Python  │
+          └────────┬─────────┘
+                   │
+                   ▼
+          ┌──────────────────┐
+          │ Clip Ranking     │
+          │ Engine           │
+          └────────┬─────────┘
+                   │
+                   ▼
+          ┌──────────────────┐
+          │ FFmpeg Renderer  │
+          │                  │
+          │ Crop             │
+          │ Subtitle         │
+          │ Export           │
+          └────────┬─────────┘
+                   │
+                   ▼
+             MP4 REELS
+```
+
+---
+
+# 13. Recommended Repository Structure
+
+```text
+clipforge-local/
+
+├── README.md
+├── .gitignore
+│
+├── backend/
+│   ├── requirements.txt
+│   ├── main.py
+│   │
+│   ├── api/
+│   │   ├── routes/
+│   │   │   ├── projects.py
+│   │   │   ├── analysis.py
+│   │   │   └── clips.py
+│   │
+│   ├── services/
+│   │   ├── video_service.py
+│   │   ├── audio_service.py
+│   │   ├── transcription_service.py
+│   │   ├── llm_service.py
+│   │   ├── analysis_service.py
+│   │   ├── clip_service.py
+│   │   └── render_service.py
+│   │
+│   ├── engines/
+│   │   ├── chunker.py
+│   │   ├── candidate_detector.py
+│   │   ├── scoring_engine.py
+│   │   └── deduplicator.py
+│   │
+│   ├── models/
+│   │   ├── project.py
+│   │   ├── transcript.py
+│   │   └── clip.py
+│   │
+│   └── utils/
+│       ├── ffmpeg.py
+│       ├── files.py
+│       └── timestamps.py
+│
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Project.jsx
+│   │   │   └── Settings.jsx
+│   │   │
+│   │   ├── components/
+│   │   │   ├── UrlInput.jsx
+│   │   │   ├── ProcessingStatus.jsx
+│   │   │   ├── ClipCard.jsx
+│   │   │   └── ClipEditor.jsx
+│
+├── data/
+│   └── projects/
+│
+└── docs/
+    ├── PRD.md
+    ├── BRD.md
+    ├── ARCHITECTURE.md
+    └── DEVELOPMENT_PLAN.md
+```
+
+---
+
+# 14. Database Design
+
+Use SQLite.
+
+You barely need a database initially.
+
+## Projects
+
+```sql
+projects
+
+id
+title
+source_url
+status
+created_at
+```
+
+## Clips
+
+```sql
+clips
+
+id
+project_id
+
+start_time
+end_time
+duration
+
+title
+hook
+reason
+
+hook_score
+context_score
+emotion_score
+curiosity_score
+completeness_score
+shareability_score
+
+final_score
+
+status
+output_path
+```
+
+## Processing jobs
+
+```sql
+jobs
+
+id
+project_id
+
+job_type
+status
+progress
+error_message
+
+created_at
+completed_at
+```
+
+---
+
+# 15. Processing State Machine
+
+Every project should have states.
+
+```text
+CREATED
+   ↓
+DOWNLOADING
+   ↓
+DOWNLOADED
+   ↓
+EXTRACTING_AUDIO
+   ↓
+TRANSCRIBING
+   ↓
+ANALYZING
+   ↓
+RANKING
+   ↓
+READY_FOR_REVIEW
+   ↓
+RENDERING
+   ↓
+COMPLETED
+```
+
+If something fails:
+
+```text
+FAILED
+```
+
+Do not build this as one giant script where everything breaks and you don't know which step failed.
+
+---
+
+# 16. Development Phases
+
+## Phase 0 — Environment
+
+Goal:
+
+```text
+Make the laptop capable of processing one video.
+```
+
+Install:
+
+* Python
+* Git
+* FFmpeg
+* Ollama
+* Node.js
+* yt-dlp
+
+Test every tool independently.
+
+---
+
+# Phase 1 — Video Pipeline
+
+Build:
+
+```text
+URL
+ ↓
+video file
+ ↓
+audio file
+```
+
+Success criteria:
+
+```text
+Paste URL
+↓
+Video saved locally
+↓
+Audio extracted successfully
+```
+
+Do not build UI first.
+
+Test using CLI.
+
+---
+
+# Phase 2 — Transcription
+
+Build:
+
+```text
+audio.mp3
+ ↓
+faster-whisper
+ ↓
+transcript.json
+```
+
+Success criteria:
+
+* timestamps correct,
+* text readable,
+* language detected,
+* transcript saved.
+
+Test this before involving any LLM.
+
+---
+
+# Phase 3 — Clip Intelligence
+
+Build:
+
+```text
+transcript
+ ↓
+chunking
+ ↓
+LLM
+ ↓
+candidate clips
+```
+
+Expected result:
+
+```json
+[
+  {
+    "start": 721,
+    "end": 770,
+    "title": "Stop Trying to Fix Yourself",
+    "scores": {}
+  }
+]
+```
+
+This is the **hardest and most important phase**.
+
+Spend the majority of your effort here.
+
+---
+
+# Phase 4 — Ranking Engine
+
+Implement:
+
+```text
+candidate clips
+        ↓
+validation
+        ↓
+scoring
+        ↓
+overlap removal
+        ↓
+diversity filtering
+        ↓
+TOP 10
+```
+
+No rendering yet.
+
+Manually review whether the top 10 are actually good.
+
+If they are bad, **fix this phase instead of adding animations**.
+
+---
+
+# Phase 5 — Basic UI
+
+Only now build:
+
+```text
+Paste URL
+        ↓
+Analyze
+        ↓
+Processing Status
+        ↓
+Top Clip Candidates
+```
+
+---
+
+# Phase 6 — Video Generation
+
+For selected clips:
+
+```text
+Source video
+      ↓
+Trim timestamps
+      ↓
+Center crop
+      ↓
+Scale 1080×1920
+      ↓
+Subtitles
+      ↓
+MP4
+```
+
+---
+
+# Phase 7 — Human Editing
+
+Allow:
+
+```text
+Start: [12:42.0]
+
+End:   [13:31.0]
+
+[Update Clip]
+```
+
+This is extremely important.
+
+AI timestamps will not always be perfect.
+
+---
+
+# Phase 8 — Improvements
+
+Only after everything above works:
+
+### V2 features
+
+* Face detection
+* Speaker tracking
+* Better subtitle animations
+* Multiple clip styles
+* Automatic hook text overlay
+* B-roll placeholders
+* Clip preview
+* Local video upload
+* Batch processing
+
+---
+
+# 17. Performance Rules for Your 8 GB Laptop
+
+This matters.
+
+## Rule 1
+
+Only one heavy task at a time.
+
+Bad:
+
+```text
+Whisper
++
+Ollama
++
+FFmpeg
++
+Chrome
++
+VS Code
+```
+
+Better:
+
+```text
+Whisper finishes
+↓
+release resources
+↓
+Ollama analyzes
+↓
+release resources
+↓
+FFmpeg renders
+```
+
+## Rule 2
+
+Process one video at a time.
+
+Do not build parallel workers.
+
+## Rule 3
+
+Delete temporary files.
+
+Keep:
+
+```text
+source video
+transcript
+final reels
+```
+
+Delete:
+
+```text
+temporary WAV files
+temporary chunks
+preview files
+```
+
+## Rule 4
+
+Start with 720p if performance is terrible.
+
+There is no point processing 4K video on your machine.
+
+---
+
+# 18. Antigravity Development Strategy
+
+Do **not** give Antigravity one giant prompt saying:
+
+> Build me an AI viral reel generator.
+
+You will get a mess.
+
+Instead, develop through controlled milestones.
+
+## Milestone 1 prompt
+
+Tell it:
+
+```text
+We are building a local-first AI video clip extraction application.
+
+Constraints:
+- Must run on an Intel i5 laptop with 8 GB RAM.
+- Must have zero paid API dependencies.
+- Must process only one video at a time.
+- Architecture must be a modular monolith.
+- Do not introduce Docker, Kubernetes, Redis, Celery, PostgreSQL, cloud services, authentication, or payments.
+
+Technology:
+- Python 3.11
+- FastAPI
+- faster-whisper CPU INT8
+- Ollama local API
+- FFmpeg
+- SQLite
+- React + Vite
+
+First task:
+Create the project structure and implement only the video ingestion module.
+
+Requirements:
+1. Accept a supported video URL.
+2. Validate the URL.
+3. Create a unique project directory.
+4. Retrieve the source video where the user has permission to process it.
+5. Extract audio.
+6. Return structured project metadata.
+7. Implement proper error handling.
+8. Do not implement transcription or AI analysis yet.
+
+Before writing code, show the proposed file structure and implementation plan.
+```
+
+Then build one module.
+
+---
+
+# 19. Development Order
+
+Follow this exact order:
+
+```text
+DAY 1
+
+Environment
+↓
+Video ingestion
+↓
+Audio extraction
+```
+
+```text
+DAY 2
+
+faster-whisper
+↓
+Transcript JSON
+↓
+Timestamp validation
+```
+
+```text
+DAY 3
+
+Transcript chunking
+↓
+Local LLM integration
+```
+
+```text
+DAY 4
+
+Candidate generation
+↓
+JSON validation
+```
+
+```text
+DAY 5
+
+Scoring
+↓
+Deduplication
+↓
+Top 10 ranking
+```
+
+```text
+DAY 6
+
+FastAPI endpoints
+```
+
+```text
+DAY 7
+
+React UI
+```
+
+```text
+DAY 8
+
+Clip trimming
+```
+
+```text
+DAY 9
+
+9:16 rendering
+```
+
+```text
+DAY 10
+
+Subtitles
+```
+
+Then test with real videos.
+
+Realistically, expect **2–4 weeks of iteration**, not a magical finished product in 10 days. The AI clip-selection quality will take repeated testing and prompt refinement.
+
+---
+
+# 20. Definition of Done for V1
+
+Your MVP is complete when this works:
+
+```text
+USER PASTES URL
+
+        ↓
+
+SYSTEM PROCESSES VIDEO
+
+        ↓
+
+SYSTEM TRANSCRIBES
+
+        ↓
+
+SYSTEM ANALYZES CONTENT
+
+        ↓
+
+SYSTEM RETURNS TOP 10 CLIPS
+
+        ↓
+
+USER SELECTS 3
+
+        ↓
+
+SYSTEM GENERATES
+
+1080 × 1920
+
+CAPTIONED MP4 FILES
+```
+
+That is a real product.
+
+Not a demo.
+
+---
+
+# 21. The Biggest Risk
+
+The hardest problem is **not downloading the video**.
+
+Not Whisper.
+
+Not FFmpeg.
+
+Not React.
+
+The hardest problem is:
+
+> **Selecting clips that are actually worth watching.**
+
+You need to create a testing dataset.
+
+For example:
+
+```text
+10 long videos
+```
+
+For every video:
+
+1. Run your system.
+2. Get top 10 clips.
+3. Watch all 10.
+4. Score them manually.
+5. Record why good/bad clips were selected.
+6. Improve the scoring rules and prompts.
+
+Create:
+
+```text
+evaluation.json
+```
+
+Example:
+
+```json
+{
+  "video_id": "sermon_001",
+  "clips": [
+    {
+      "clip_id": "001",
+      "ai_score": 91,
+      "human_score": 8.5,
+      "result": "good"
+    },
+    {
+      "clip_id": "002",
+      "ai_score": 94,
+      "human_score": 3,
+      "result": "bad",
+      "reason": "Requires previous context"
+    }
+  ]
+}
+```
+
+This eventually becomes your biggest asset.
+
+---
+
+# My Strong Recommendation
+
+Build the first version specifically around **talking-head and sermon/podcast content**.
+
+Do not try to compete with every AI video editor.
+
+Your strongest version could eventually become:
+
+> **An AI system that understands long-form Christian content and identifies the strongest standalone moments for reels.**
+
+But first, build the generic engine correctly.
+
+### Your immediate next step
+
+Create the repository and start with **Phase 0 + Phase 1 only**. Do not touch the UI, captions, face tracking, or "viral effects" yet.
+
+For your laptop, `faster-whisper` CPU INT8 is a sensible transcription starting point, and FFmpeg provides the crop/filter capabilities needed for the basic renderer. Ollama can provide the local analysis layer without requiring a paid API. ([GitHub][1])
+
+And one correction to the earlier plan: **do not commit in advance to a specific local model until we check your exact CPU and operating system**. With only 8 GB RAM, model choice and quantization need to be tested rather than guessed.
+
+I can also help you turn this into a **single master development specification/prompt for Antigravity**, with exact milestones, acceptance criteria, architecture rules, API contracts, database schema, and instructions telling it exactly what to build and what **not** to overengineer.
+
+[1]: https://github.com/SYSTRAN/faster-whisper/blob/master/README.md?plain=1&utm_source=chatgpt.com "faster-whisper/README.md at master · SYSTRAN/faster-whisper · GitHub"
+[2]: https://github.com/ollama/ollama/blob/main/docs/windows.mdx?utm_source=chatgpt.com "ollama/docs/windows.mdx at main · ollama/ollama · GitHub"
+[3]: https://www.ffmpeg.org/ffmpeg-filters.html?utm_source=chatgpt.com "FFmpeg Filters Documentation"
