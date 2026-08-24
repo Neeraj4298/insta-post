@@ -107,3 +107,35 @@ def get_project_transcript(project_id: str):
     with open(transcript_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
+
+@router.post("/{project_id}/analyze")
+def analyze_project(project_id: str, background_tasks: BackgroundTasks, model_name: str = "llama3"):
+    """Trigger Phase 3: Analyze transcript chunks and generate clip potential candidates."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    if not meta.get("transcript_path") or not os.path.exists(meta.get("transcript_path")):
+        raise HTTPException(status_code=400, detail="Transcript not found. Run Phase 2 transcription first.")
+
+    from backend.services.analysis_service import analyze_project_transcript
+    background_tasks.add_task(analyze_project_transcript, project_id, model_name)
+    return {"message": "Intelligence analysis task started", "project_id": project_id, "status": "ANALYZING"}
+
+@router.get("/{project_id}/candidates")
+def get_project_candidates(project_id: str):
+    """Retrieve generated clip potential candidates for a project."""
+    try:
+        meta = load_project_metadata(project_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    candidates_path = meta.get("candidates_path")
+    if not candidates_path or not os.path.exists(candidates_path):
+        raise HTTPException(status_code=404, detail="Candidates not found for this project")
+
+    import json
+    with open(candidates_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data
