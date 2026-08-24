@@ -1,0 +1,40 @@
+[
+  {
+    "candidate_id": "cand_1",
+    "project_id": "proj_ab8080d2",
+    "start": 10.0,
+    "end": 45.0,
+    "duration": 35.0,
+    "title": "Clip A - High Score",
+    "hook": "Hook A",
+    "reason": "Reason A",
+    "scores": {
+      "hook": 9.0,
+      "standalone_context": 9.0,
+      "message_completeness": 9.0,
+      "emotional_impact": 9.0,
+      "curiosity": 9.0,
+      "shareability": 9.0
+    },
+    "final_score": 90.0
+  },
+  {
+    "candidate_id": "cand_3",
+    "project_id": "proj_ab8080d2",
+    "start": 120.0,
+    "end": 160.0,
+    "duration": 40.0,
+    "title": "Clip C - Separate Section",
+    "hook": "Hook C",
+    "reason": "Reason C",
+    "scores": {
+      "hook": 8.5,
+      "standalone_context": 8.5,
+      "message_completeness": 8.5,
+      "emotional_impact": 8.5,
+      "curiosity": 8.5,
+      "shareability": 8.5
+    },
+    "final_score": 85.0
+  }
+]

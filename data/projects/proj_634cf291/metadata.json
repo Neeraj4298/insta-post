@@ -1,0 +1,20 @@
+{
+  "project_id": "proj_634cf291",
+  "title": "Render Test Project",
+  "source_url": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_634cf291/source/video.mp4",
+  "status": "COMPLETED",
+  "video_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_634cf291/source/video.mp4",
+  "ranked_clips_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_634cf291/analysis/ranked_clips.json",
+  "transcript_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_634cf291/transcript/transcript.json",
+  "created_at": "2026-08-24T00:00:00Z",
+  "rendered_clips": [
+    {
+      "candidate_id": "cand_reel_1",
+      "title": "Render Test Reel",
+      "output_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_634cf291/output/cand_reel_1.mp4",
+      "srt_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_634cf291/output/cand_reel_1.srt",
+      "duration": 3.0,
+      "final_score": 80.0
+    }
+  ]
+}

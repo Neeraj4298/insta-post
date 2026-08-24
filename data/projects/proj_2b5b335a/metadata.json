@@ -1,0 +1,10 @@
+{
+  "project_id": "proj_2b5b335a",
+  "title": "Intelligence Test Video",
+  "source_url": "test",
+  "status": "ANALYZED",
+  "transcript_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_2b5b335a/transcript/transcript.json",
+  "created_at": "2026-08-24T00:00:00Z",
+  "candidates_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_2b5b335a/analysis/candidates.json",
+  "candidate_count": 5
+}

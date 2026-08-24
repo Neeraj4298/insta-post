@@ -1,0 +1,97 @@
+[
+  {
+    "candidate_id": "cand_efc492e1",
+    "project_id": "proj_72c9d04b",
+    "start": 0.0,
+    "end": 25.0,
+    "duration": 25.0,
+    "title": "Welcome To Today'S Talk About Life",
+    "hook": "Welcome to today's talk about life and faith.",
+    "reason": "Identified standalone moment with strong hook and message resolution.",
+    "scores": {
+      "hook": 8.0,
+      "standalone_context": 7.5,
+      "message_completeness": 8.5,
+      "emotional_impact": 9.5,
+      "curiosity": 7.2,
+      "shareability": 8.8
+    },
+    "final_score": 81.6
+  },
+  {
+    "candidate_id": "cand_473c59be",
+    "project_id": "proj_72c9d04b",
+    "start": 5.1,
+    "end": 25.0,
+    "duration": 19.9,
+    "title": "Remember This Truth: You Were Never",
+    "hook": "Remember this truth: you were never meant to carry this heavy burden alone because hope changes everything.",
+    "reason": "Identified standalone moment with strong hook and message resolution.",
+    "scores": {
+      "hook": 8.0,
+      "standalone_context": 7.5,
+      "message_completeness": 8.5,
+      "emotional_impact": 9.0,
+      "curiosity": 7.2,
+      "shareability": 8.5
+    },
+    "final_score": 80.7
+  },
+  {
+    "candidate_id": "cand_571f0d26",
+    "project_id": "proj_72c9d04b",
+    "start": 25.5,
+    "end": 50.0,
+    "duration": 24.5,
+    "title": "When You Stop Trying To Fix",
+    "hook": "When you stop trying to fix yourself and start believing in grace, your whole perspective transforms.",
+    "reason": "Identified standalone moment with strong hook and message resolution.",
+    "scores": {
+      "hook": 9.5,
+      "standalone_context": 7.5,
+      "message_completeness": 8.5,
+      "emotional_impact": 7.4,
+      "curiosity": 8.6,
+      "shareability": 8.4
+    },
+    "final_score": 83.4
+  },
+  {
+    "candidate_id": "cand_13ca9bdb",
+    "project_id": "proj_72c9d04b",
+    "start": 50.5,
+    "end": 80.0,
+    "duration": 29.5,
+    "title": "This Is The Most Important Lesson",
+    "hook": "This is the most important lesson you will ever hear in your entire lifetime.",
+    "reason": "Identified standalone moment with strong hook and message resolution.",
+    "scores": {
+      "hook": 8.0,
+      "standalone_context": 7.5,
+      "message_completeness": 8.5,
+      "emotional_impact": 7.4,
+      "curiosity": 7.2,
+      "shareability": 7.7
+    },
+    "final_score": 77.9
+  },
+  {
+    "candidate_id": "cand_963eeae7",
+    "project_id": "proj_72c9d04b",
+    "start": 80.5,
+    "end": 115.0,
+    "duration": 34.5,
+    "title": "Thank You For Listening Today.",
+    "hook": "Thank you for listening today.",
+    "reason": "Identified standalone moment with strong hook and message resolution.",
+    "scores": {
+      "hook": 8.0,
+      "standalone_context": 7.5,
+      "message_completeness": 8.5,
+      "emotional_impact": 7.8,
+      "curiosity": 7.2,
+      "shareability": 7.9
+    },
+    "final_score": 78.6
+  }
+]

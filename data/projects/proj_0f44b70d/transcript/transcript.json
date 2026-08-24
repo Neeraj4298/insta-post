@@ -1,0 +1,37 @@
+{
+  "project_id": "proj_0f44b70d",
+  "language": "en",
+  "duration_seconds": 120.0,
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 5.0,
+      "text": "Welcome to today's talk about life and faith."
+    },
+    {
+      "id": 2,
+      "start": 5.1,
+      "end": 25.0,
+      "text": "Remember this truth: you were never meant to carry this heavy burden alone because hope changes everything."
+    },
+    {
+      "id": 3,
+      "start": 25.5,
+      "end": 50.0,
+      "text": "When you stop trying to fix yourself and start believing in grace, your whole perspective transforms."
+    },
+    {
+      "id": 4,
+      "start": 50.5,
+      "end": 80.0,
+      "text": "This is the most important lesson you will ever hear in your entire lifetime."
+    },
+    {
+      "id": 5,
+      "start": 80.5,
+      "end": 115.0,
+      "text": "Thank you for listening today."
+    }
+  ]
+}

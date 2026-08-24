@@ -1,0 +1,12 @@
+{
+  "project_id": "proj_c3ec4a0d",
+  "title": "Transcription Test Video",
+  "source_url": "/tmp/pytest-of-peter-paul/pytest-5/test_transcription_api_routes0/transcribe_sample.mp4",
+  "status": "TRANSCRIBED",
+  "video_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_c3ec4a0d/source/video.mp4",
+  "audio_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_c3ec4a0d/audio/audio.wav",
+  "duration_seconds": 3.0,
+  "error_message": null,
+  "created_at": "2026-08-24T06:06:35.547096+00:00",
+  "transcript_path": "/home/peter-paul/Documents/ai/instassist/data/projects/proj_c3ec4a0d/transcript/transcript.json"
+}
